@@ -1,0 +1,22 @@
+{
+  "name": "NEON FORGE 2077",
+  "short_name": "Forge2077",
+  "description": "Massive Cyberpunk Profile Generator - Offline Ready",
+  "start_url": "neon_forge_massive.html",
+  "display": "standalone",
+  "background_color": "#000",
+  "theme_color": "#0ff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cGF0aCBkPSJNNTAgMTAgTDcwIDUwIEw1MCA5MCBMMzAgNTAgWiIgZmlsbD0iIzBmZiIvPjwvc3ZnPg==",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cGF0aCBkPSJNNTAgMTAgTDkwIDUwIEw1MCA5MCBMMTAgNTAgWiIgZmlsbD0iI2YwZiIvPjwvc3ZnPg==",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
