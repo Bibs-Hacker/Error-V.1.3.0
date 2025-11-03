@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cyber" manifest="manifest.json">
+<head>
+<meta charset="UTF-8">
+<title>NEON FORGE 2077 | MASSIVE CYBERPUNK PROFILE GENERATOR</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Roboto+Mono&display=swap" rel="stylesheet">
+<style>
+/* ========================================
+   NEON FORGE 2077 vMASSIVE - FIXED + NEON ICON
+   SPLASH AUTO-FADES | REAL NEON SVG | PWA READY
+   ======================================== */
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;background:#000;color:#0ff;font-family:'Roboto Mono',monospace;overflow:hidden;position:relative;}
+a{color:inherit;text-decoration:none;}
+
+/* CYBERPUNK ROOT */
+:root{
+  --neon-cyan:#0ff;--neon-magenta:#f0f;--neon-pink:#ff1a8c;--neon-yellow:#ffff33;
+  --grid:#111;--scan:#00ffcc33;--rain:#0ff;--holo:#0ff33;
+}
+
+/* EPIC BG: MATRIX RAIN + SCANLINES + HOLO PARTICLES + GLITCH GRID */
+#bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+#grid-overlay{position:fixed;inset:0;background:repeating-linear-gradient(0deg,#111 0px,#111 1px,transparent 1px,transparent 2px),repeating-linear-gradient(90deg,#111 0px,#111 1px,transparent 1px,transparent 2px);opacity:0.2;animation:gridPulse 8s infinite;}
+@keyframes gridPulse{0%,100%{opacity:0.2}50%{opacity:0.4}}
+
+/* GLITCH TEXT + HOLO */
+.glitch{
+  position:relative;color:var(--neon-cyan);
+  text-shadow:0 0 10px var(--neon-cyan),0 0 20px var(--neon-magenta),0 0 40px var(--neon-pink);
+  animation:glitch 1.5s infinite, holoFlicker 0.1s infinite alternate;
+}
+.glitch::before,.glitch::after{
+  content:attr(data-text);position:absolute;left:0;top:0;width:100%;height:100%;background:#000;
+}
+.glitch::before{left:3px;text-shadow:-3px 0 #f0f;clip-path:polygon(0 0,100% 0,100% 40%,0 40%);animation:glitch-1 0.4s infinite;}
+.glitch::after{left:-3px;text-shadow:3px 0 #0ff;clip-path:polygon(0 60%,100% 60%,100% 100%,0 100%);animation:glitch-2 0.4s infinite;}
+@keyframes glitch{0%,100%{clip-path:polygon(0 0,100% 0,100% 30%,0 30%)}20%{clip-path:polygon(0 40%,100% 40%,100% 60%,0 60%)}40%{clip-path:polygon(0 70%,100% 70%,100% 90%,0 90%)}}
+@keyframes glitch-1{0%,100%{transform:translate(0)}25%{transform:translate(-3px,3px)}50%{transform:translate(3px,-3px)}}
+@keyframes glitch-2{0%,100%{transform:translate(0)}25%{transform:translate(3px,-3px)}50%{transform:translate(-3px,3px)}}
+@keyframes holoFlicker{from{opacity:1}to{opacity:0.85}}
+
+/* SPLASH - FIXED AUTO-FADE */
+#splash{position:fixed;inset:0;z-index:9999;background:#000;display:flex;flex-direction:column;justify-content:center;align-items:center;transition:opacity 3s ease-out;}
+#splash.fade{opacity:0;pointer-events:none;}
+#logo{width:320px;height:320px;margin-bottom:40px;position:relative;}
+#logo svg{width:100%;height:100%;filter:drop-shadow(0 0 60px var(--neon-cyan));animation:neonPulse 2s infinite, float 6s infinite;}
+.neon-path{stroke:var(--neon-cyan);stroke-width:6;fill:none;stroke-dasharray:300;stroke-dashoffset:300;animation:draw 4s linear infinite, colorShift 6s infinite;}
+.neon-fill{fill:var(--neon-magenta);animation:colorShift 6s infinite;}
+@keyframes neonPulse{0%,100%{filter:drop-shadow(0 0 60px var(--neon-cyan))}50%{filter:drop-shadow(0 0 120px var(--neon-cyan),0 0 180px var(--neon-magenta))}}
+@keyframes draw{to{stroke-dashoffset:0;}}
+@keyframes colorShift{0%{stroke:#0ff;fill:#f0f}50%{stroke:#f0f;fill:#0ff}100%{stroke:#0ff;fill:#f0f}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-30px)}}
+
+/* AGE GATE - EPIC */
+#gate{position:fixed;inset:0;z-index:9998;background:#000;display:none;flex-direction:column;justify-content:center;align-items:center;gap:30px;}
+#gate.active{display:flex;}
+#warning{color:#f00;font-size:2rem;font-weight:bold;animation:blink 0.8s infinite, shake 0.5s infinite;}
+@keyframes blink{0%,100%{opacity:1;text-shadow:0 0 20px #f00}50%{opacity:0.4}}
+@keyframes shake{0%,100%{transform:translateX(0)}50%{transform:translateX(10px)}}
+
+/* APP - MASSIVE GRID */
+#app{display:none;height:100vh;flex-direction:column;opacity:0;transition:opacity 1.5s;}
+#app.active{display:flex;opacity:1;}
+
+/* REST OF STYLES UNCHANGED */
+header{padding:20px;background:#111;border-bottom:3px solid var(--neon-cyan);text-align:center;box-shadow:0 10px 30px rgba(0,255,255,0.3);}
+h1{font-family:'Orbitron',sans-serif;font-size:3.5rem;background:linear-gradient(90deg,var(--neon-cyan),var(--neon-magenta),var(--neon-yellow),var(--neon-pink));-webkit-background-clip:text;color:transparent;animation:rainbow 8s linear infinite;}
+@keyframes rainbow{to{background-position:300%}}
+
+#generator{padding:30px;flex:1;overflow-y:auto;display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px;}
+@media(max-width:1200px){#generator{grid-template-columns:1fr 1fr;}}
+@media(max-width:800px){#generator{grid-template-columns:1fr;}}
+.form, .cyberware, .preview{background:#111;border:3px solid var(--neon-cyan);border-radius:20px;padding:30px;box-shadow:0 0 40px rgba(0,255,255,0.4);position:relative;overflow:hidden;}
+.form::before, .cyberware::before, .preview::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 50%,transparent 0%,var(--holo) 100%);opacity:0.1;animation:holoScan 10s linear infinite;}
+@keyframes holoScan{0%{transform:translateY(-100%)}100%{transform:translateY(100%)}}
+.form h2, .cyberware h2, .preview h2{margin-bottom:25px;color:var(--neon-magenta);text-shadow:0 0 20px var(--neon-magenta);font-size:2rem;}
+
+.form-group{margin:20px 0;}
+label{display:block;margin-bottom:10px;color:var(--neon-cyan);text-shadow:0 0 15px var(--neon-cyan);font-size:1.2rem;}
+input,select,textarea{width:100%;padding:15px;background:#001;border:2px solid var(--neon-cyan);color:var(--neon-cyan);border-radius:10px;box-shadow:0 0 20px var(--neon-cyan);font-size:1.1rem;}
+#bio{height:150px;}
+
+.cyberware-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px;}
+.cyberware-item{
+  background:#001;border:2px solid var(--neon-pink);border-radius:12px;padding:15px;cursor:pointer;transition:0.4s;
+  text-align:center;box-shadow:0 0 15px rgba(255,0,255,0.3);
+}
+.cyberware-item:hover,.cyberware-item.selected{
+  background:var(--neon-pink);color:#000;transform:scale(1.05);box-shadow:0 0 40px var(--neon-pink);
+}
+.cyberware-item img{width:60px;height:60px;margin-bottom:10px;filter:drop-shadow(0 0 20px var(--neon-pink));}
+
+#forge-btn, #random-btn, #backstory-btn{padding:18px;background:var(--neon-cyan);color:#000;border:none;border-radius:12px;font-weight:bold;cursor:pointer;width:100%;margin-top:25px;box-shadow:0 0 40px var(--neon-cyan);transition:0.4s;font-size:1.3rem;}
+#forge-btn:hover, #random-btn:hover, #backstory-btn:hover{background:#0c0;transform:scale(1.08);box-shadow:0 0 60px #0c0;}
+
+#profile-card{
+  background:linear-gradient(135deg,#001,#111);border:4px solid var(--neon-cyan);border-radius:20px;padding:30px;
+  box-shadow:0 0 60px rgba(0,255,255,0.6);text-align:center;animation:cardPulse 3s infinite, float 6s infinite;
+}
+@keyframes cardPulse{0%,100%{box-shadow:0 0 60px rgba(0,255,255,0.6)}50%{box-shadow:0 0 100px rgba(0,255,255,1),0 0 150px var(--neon-magenta);}}
+#avatar{
+  width:200px;height:200px;background:var(--neon-magenta);border-radius:50%;margin:0 auto 25px;
+  display:flex;justify-content:center;align-items:center;font-size:6rem;color:#000;box-shadow:0 0 50px var(--neon-magenta);
+  animation:avatarGlow 4s infinite;
+}
+@keyframes avatarGlow{0%,100%{box-shadow:0 0 50px var(--neon-magenta)}50%{box-shadow:0 0 80px var(--neon-magenta),0 0 120px var(--neon-pink);}}
+#profile-name{font-size:3rem;color:var(--neon-magenta);text-shadow:0 0 30px var(--neon-magenta);margin:20px 0;}
+#profile-details{color:#0ff;font-size:1.3rem;line-height:1.8;}
+#profile-bio{margin:25px 0;color:#ccc;font-style:italic;font-size:1.1rem;line-height:1.6;}
+#backstory{margin:30px 0;padding:20px;background:#00f;border:2px dashed var(--neon-yellow);color:#ff0;font-size:1rem;line-height:1.8;min-height:200px;}
+
+#copy-btn{margin-top:25px;padding:15px 40px;background:#111;border:border:3px solid var(--neon-cyan);color:var(--neon-cyan);border-radius:50px;cursor:pointer;box-shadow:0 0 30px var(--neon-cyan);transition:0.4s;font-size:1.2rem;}
+#copy-btn:hover{background:var(--neon-cyan);color:#000;transform:scale(1.1);}
+
+footer{padding:20px;background:#111;border-top:3px solid var(--neon-cyan);text-align:center;color:#0ff;font-size:1rem;}
+footer a{color:var(--neon-magenta);text-shadow:0 0 15px var(--neon-magenta);}
+
+.particle{
+  position:absolute;width:6px;height:6px;background:var(--neon-cyan);border-radius:50%;
+  box-shadow:0 0 15px var(--neon-cyan);pointer-events:none;
+  animation:particleFloat 6s linear infinite;
+}
+@keyframes particleFloat{
+  0%{transform:translateY(100vh) rotate(0deg);opacity:0;}
+  10%{opacity:1;}
+  90%{opacity:1;}
+  100%{transform:translateY(-100px) rotate(360deg);opacity:0;}
+}
+</style>
+</head>
+<body>
+
+<!-- EPIC BACKGROUND -->
+<canvas id="bg-canvas"></canvas>
+<div id="grid-overlay"></div>
+
+<!-- FIXED SPLASH WITH REAL NEON ICON -->
+<div id="splash">
+  <div id="logo">
+    <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+      <!-- Neon "N" -->
+      <path class="neon-path" d="M100 100 L100 300 L180 200 L180 300 M220 100 L220 300" />
+      <!-- Neon "F" -->
+      <path class="neon-path" d="M260 100 L260 300 L340 100 L340 160 L300 160 L340 200 L340 300" />
+      <!-- Glowing core -->
+      <circle class="neon-fill" cx="200" cy="200" r="60"/>
+      <!-- Electric arcs -->
+      <path class="neon-path" d="M150 150 Q200 100 250 150 M150 250 Q200 300 250 250" />
+      <!-- Spark nodes -->
+      <circle cx="150" cy="150" r="12" fill="#0ff"/>
+      <circle cx="250" cy="150" r="12" fill="#0ff"/>
+      <circle cx="150" cy="250" r="12" fill="#0ff"/>
+      <circle cx="250" cy="250" r="12" fill="#0ff"/>
+    </svg>
+  </div>
+  <h1 class="glitch" data-text="NEON FORGE 2077">NEON FORGE 2077</h1>
+  <p style="margin-top:20px;font-size:1.5rem;animation:pulse 2s infinite;">NEURAL FORGE BOOTING...</p>
+</div>
+
+<!-- AGE GATE -->
+<div id="gate">
+  <h1 class="glitch" data-text="BIOWARE SCAN">BIOWARE SCAN</h1>
+  <p id="warning">⚠️ 18+ CHROME ONLY - FLATLINE DETECTED ⚠️</p>
+  <input type="number" id="age-input" placeholder="IMPLANT AGE">
+  <button id="enter-btn">INJECT NANITES</button>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header>
+    <h1>NEON FORGE 2077</h1>
+  </header>
+
+  <div id="generator">
+    <!-- CORE FORGE -->
+    <div class="form">
+      <h2 class="glitch" data-text="CORE IMPLANT">CORE IMPLANT</h2>
+      <div class="form-group">
+        <label>NEURAL HANDLE</label>
+        <input type="text" id="name" placeholder="e.g. Razor Nova">
+      </div>
+      <div class="form-group">
+        <label>AGE</label>
+        <input type="number" id="age" placeholder="e.g. 29">
+      </div>
+      <div class="form-group">
+        <label>ROLE</label>
+        <select id="role">
+          <option>Netrunner</option>
+          <option>Solo</option>
+          <option>Fixer</option>
+          <option>Techie</option>
+          <option>Rockerboy</option>
+          <option>Nomad</option>
+          <option>Corpo</option>
+          <option>Media</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>FACTION</label>
+        <select id="faction">
+          <option>Arasaka</option>
+          <option>Militech</option>
+          <option>Valentinos</option>
+          <option>Mox</option>
+          <option>Tyger Claws</option>
+          <option>Afterlife</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>BIO CIRCUIT</label>
+        <textarea id="bio" placeholder="e.g. Ex-corp turned street legend..."></textarea>
+      </div>
+      <button id="forge-btn">FORGE CORE</button>
+      <button id="random-btn">RANDOM CORE</button>
+    </div>
+
+    <!-- CYBERWARE BAY -->
+    <div class="cyberware">
+      <h2 class="glitch" data-text="CYBERWARE BAY">CYBERWARE BAY</h2>
+      <div class="cyberware-grid">
+        <div class="cyberware-item" data-ware="Kerenzikov"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cGF0aCBkPSJNNTAgMTAgTDcwIDUwIEwgNTAgOTAgTDMwIDUwIFoiIGZpbGw9IiNmMGYiLz48L3N2Zz4=">Kerenzikov</div>
+        <div class="cyberware-item" data-ware="Sandevistan"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iODAiIGhlaWdodD0iODAiIHg9IjEwIiB5PSIxMCIgcng9IjIwIiBmaWxsPSIjMDBmZiIvPjwvc3ZnPg==">Sandevistan</div>
+        <div class="cyberware-item" data-ware="Mantis Blades"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cGF0aCBkPSJNNTAgMTAgTDkwIDUwIEw1MCA5MCBMMTAgNTAgWiIgZmlsbD0iI2YwZiIvPjwvc3ZnPg==">Mantis Blades</div>
+        <div class="cyberware-item" data-ware="Gorilla Arms"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzAwZmYiLz48L3N2Zz4=">Gorilla Arms</div>
+        <div class="cyberware-item" data-ware="Cyberoptics"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSIzNSIgZmlsbD0iI2YwZiIvPjwvc3ZnPg==">Cyberoptics</div>
+        <div class="cyberware-item" data-ware="Neural Link"><img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cGF0aCBkPSJNNTAgMTAgTDUwIDkwIiBzdHJva2U9IiNmMGYiIHN0cm9rZS13aWR0aD0iMjAiLz48L3N2Zz4=">Neural Link</div>
+      </div>
+      <button id="backstory-btn">GENERATE BACKSTORY</button>
+    </div>
+
+    <!-- HOLO SCAN -->
+    <div class="preview">
+      <h2 class="glitch" data-text="HOLO SCAN">HOLO SCAN</h2>
+      <div id="profile-card">
+        <div id="avatar">??</div>
+        <div id="profile-name">NO CHROME FORGED</div>
+        <div id="profile-details">Age: -- | Role: -- | Faction: --</div>
+        <div id="profile-bio">Inject your legend...</div>
+        <div id="cyberware-list">Cyberware: None</div>
+        <div id="backstory">Backstory: Awaiting neural upload...</div>
+        <button id="copy-btn">COPY TO CLIPBOARD</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>18+ | NANITE CONSENT | <a href="#">FIREWALL</a> | <a href="#">DEBUG</a> | <a href="#">OFFLINE MODE</a></p>
+    <p style="margin-top:10px;color:var(--neon-magenta);">NEON FORGE vMASSIVE — FORGE THE FUTURE</p>
+  </footer>
+</div>
+
+<script>
+// AUTO-REGISTER SERVICE WORKER
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('SW registered', reg))
+      .catch(err => console.log('SW failed', err));
+  });
+}
+
+// MATRIX RAIN + PARTICLES
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = innerWidth; canvas.height = innerHeight;
+window.addEventListener('resize',()=>{canvas.width=innerWidth;canvas.height=innerHeight;});
+
+const matrix = "01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン";
+const fontSize = 18;
+const columns = canvas.width / fontSize;
+const drops = Array(Math.floor(columns)).fill(1);
+
+function drawMatrix(){
+  ctx.fillStyle = 'rgba(0,0,0,0.04)';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = '#0f0';
+  ctx.font = fontSize + 'px monospace';
+
+  drops.forEach((y,i)=>{
+    const text = matrix[Math.floor(Math.random()*matrix.length)];
+    const x = i * fontSize;
+    ctx.fillText(text, x, y * fontSize);
+    if(y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+    drops[i]++;
+  });
+}
+setInterval(drawMatrix, 40);
+
+function createParticle(){
+  const p = document.createElement('div');
+  p.className = 'particle';
+  p.style.left = Math.random()*100 + 'vw';
+  p.style.background = ['#0ff','#f0f','#ff1a8c','#ffff33'][Math.floor(Math.random()*4)];
+  p.style.animationDelay = Math.random()*6 + 's';
+  document.body.appendChild(p);
+  setTimeout(()=>p.remove(), 6000);
+}
+setInterval(createParticle, 150);
+
+// FIXED SPLASH AUTO-FADE
+const splash = document.getElementById('splash');
+const gate = document.getElementById('gate');
+const app = document.getElementById('app');
+
+// Auto-fade splash after 4s → gate
+setTimeout(() => {
+  splash.classList.add('fade');
+  setTimeout(() => {
+    splash.style.display = 'none';
+    gate.classList.add('active');
+  }, 3000);
+}, 4000);
+
+// Age gate
+document.getElementById('enter-btn').onclick = () => {
+  if (parseInt(document.getElementById('age-input').value) >= 18) {
+    gate.classList.add('hidden');
+    setTimeout(() => {
+      gate.style.display = 'none';
+      app.classList.add('active');
+    }, 1500);
+  } else {
+    alert('FLATLINE - BIOWARE REJECTED');
+    document.getElementById('age-input').value = '';
+  }
+};
+
+// REST OF JS LOGIC (unchanged)
+let selectedCyberware = [];
+const prefixes = ['Razor', 'Neon', 'Chrome', 'Ghost', 'Viper', 'Shadow', 'Bolt', 'Nova', 'Jax', 'Kat'];
+const suffixes = ['Byte', 'Runner', 'Glitch', 'Phantom', 'Hacker', 'Samurai', 'Fixer', 'Echo', 'Vixen', 'Bolt'];
+const bios = ['Street samurai haunted by corporate ghosts.', 'Netrunner diving into ICE for the ultimate score.', 'Fixer with connections in every shadow.', 'Techie building empires from scrap.', 'Rockerboy raging against the corps.', 'Nomad roaming the badlands.'];
+const roles = ['Netrunner', 'Solo', 'Fixer', 'Techie', 'Rockerboy', 'Nomad', 'Corpo', 'Media'];
+const factions = ['Arasaka', 'Militech', 'Valentinos', 'Mox', 'Tyger Claws', 'Afterlife', 'Voodoo Boys', 'Animals'];
+
+function updateProfile() {
+  const name = document.getElementById('name').value || 'Anon Runner';
+  const age = document.getElementById('age').value || '--';
+  const role = document.getElementById('role').value;
+  const faction = document.getElementById('faction').value;
+  const bio = document.getElementById('bio').value || 'No circuit forged...';
+
+  document.getElementById('avatar').textContent = name.slice(0,2).toUpperCase();
+  document.getElementById('profile-name').textContent = `${name} - ${role} of ${faction}`;
+  document.getElementById('profile-details').textContent = `Age: ${age} | Humanity: ${100 - selectedCyberware.length*10}%`;
+  document.getElementById('profile-bio').textContent = bio;
+  document.getElementById('cyberware-list').textContent = `Cyberware: ${selectedCyberware.join(', ') || 'Stock Human'}`;
+}
+
+document.querySelectorAll('.cyberware-item').forEach(item => {
+  item.addEventListener('click', () => {
+    const ware = item.dataset.ware;
+    if (item.classList.contains('selected')) {
+      item.classList.remove('selected');
+      selectedCyberware = selectedCyberware.filter(w => w !== ware);
+    } else {
+      item.classList.add('selected');
+      selectedCyberware.push(ware);
+    }
+    updateProfile();
+  });
+});
+
+document.getElementById('forge-btn').onclick = () => { updateProfile(); alert('CHROME FORGED'); };
+document.getElementById('random-btn').onclick = () => {
+  document.getElementById('name').value = prefixes[Math.floor(Math.random()*prefixes.length)] + ' ' + suffixes[Math.floor(Math.random()*suffixes.length)];
+  document.getElementById('age').value = Math.floor(Math.random()*20) + 20;
+  document.getElementById('role').value = roles[Math.floor(Math.random()*roles.length)];
+  document.getElementById('faction').value = factions[Math.floor(Math.random()*factions.length)];
+  document.getElementById('bio').value = bios[Math.floor(Math.random()*bios.length)];
+  document.querySelectorAll('.cyberware-item').forEach(item => item.classList.remove('selected'));
+  selectedCyberware = [];
+  const count = Math.floor(Math.random()*4) + 1;
+  for (let i = 0; i < count; i++) {
+    const items = document.querySelectorAll('.cyberware-item');
+    items[Math.floor(Math.random()*items.length)].click();
+  }
+  updateProfile();
+  alert('RANDOM CHROME INJECTED');
+};
+
+document.getElementById('backstory-btn').onclick = () => {
+  const name = document.getElementById('name').value || 'Runner';
+  const role = document.getElementById('role').value;
+  const faction = document.getElementById('faction').value;
+  const ware = selectedCyberware[0] || 'fists';
+  const story = `${name} was a ${role} for ${faction} until a botched heist. Now they hunt the traitor with ${ware} blazing.`;
+  document.getElementById('backstory').textContent = `BACKSTORY: ${story}`;
+};
+
+document.getElementById('copy-btn').onclick = () => {
+  const text = `${document.getElementById('profile-name').textContent}\n${document.getElementById('profile-details').textContent}\n${document.getElementById('profile-bio').textContent}\nCYBERWARE: ${selectedCyberware.join(', ')}\n${document.getElementById('backstory').textContent}`;
+  navigator.clipboard.writeText(text).then(() => alert('COPIED'));
+};
+
+document.querySelectorAll('.form input, .form select, .form textarea').forEach(el => el.addEventListener('input', updateProfile));
+</script>
+</body>
+</html>
